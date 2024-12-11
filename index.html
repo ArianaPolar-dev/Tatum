@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escritos de Polar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container, .main-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-container button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background: #0056b3;
+        }
+        .main-container h1 {
+            margin-bottom: 20px;
+        }
+        .main-container ul {
+            list-style: none;
+            padding: 0;
+        }
+        .main-container li {
+            background: #f8f8f8;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-container form {
+            margin-top: 20px;
+        }
+        .main-container form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .main-container form button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .main-container form button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <h2>Inicia Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+        <p id="error-message" style="color: red; display: none;">Usuario o contraseña incorrectos</p>
+    </div>
+
+    <div class="main-container" id="main-container" style="display: none;">
+        <h1>Mis Escritos</h1>
+        <ul id="escritos-list">
+            <!-- Los escritos se mostrarán aquí -->
+        </ul>
+        <form onsubmit="addEscrito(event)">
+            <textarea id="nuevo-escrito" rows="4" placeholder="Escribe algo nuevo..."></textarea>
+            <button type="submit">Añadir</button>
+        </form>
+    </div>
+
+    <script>
+        const escritos = [];
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'Polar' && password === 'piroxeno') {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('main-container').style.display = 'block';
+            } else {
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        function addEscrito(event) {
+            event.preventDefault();
+            const nuevoEscrito = document.getElementById('nuevo-escrito').value;
+            if (nuevoEscrito.trim() !== '') {
+                escritos.push(nuevoEscrito);
+                renderEscritos();
+                document.getElementById('nuevo-escrito').value = '';
+            }
+        }
+
+        function renderEscritos() {
+            const escritosList = document.getElementById('escritos-list');
+            escritosList.innerHTML = '';
+            escritos.forEach((escrito, index) => {
+                const li = document.createElement('li');
+                li.textContent = escrito;
+                escritosList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
