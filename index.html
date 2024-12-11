@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entre Castas</title>
+    <title>Escritos de Polar</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,16 +44,35 @@
         .main-container h1 {
             margin-bottom: 20px;
         }
-        .main-container ul {
-            list-style: none;
-            padding: 0;
+        .chapter {
+            display: none;
         }
-        .main-container li {
-            background: #f8f8f8;
-            margin: 10px 0;
-            padding: 10px;
+        .chapter.active {
+            display: block;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navigation button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .navigation button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .navigation .progress {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
         }
         .main-container form {
             margin-top: 20px;
@@ -90,9 +109,14 @@
 
     <div class="main-container" id="main-container" style="display: none;">
         <h1>Entre Castas</h1>
-        <ul id="escritos-list">
-            <!-- Los escritos se mostrarán aquí -->
-        </ul>
+        <div id="chapters-container">
+            <!-- Capítulos se mostrarán aquí -->
+        </div>
+        <div class="navigation">
+            <button id="prev-btn" onclick="prevChapter()" disabled>Anterior</button>
+            <div class="progress" id="chapter-progress">Capítulo 0 de 0</div>
+            <button id="next-btn" onclick="nextChapter()" disabled>Siguiente</button>
+        </div>
         <form id="escritos-form" onsubmit="addEscrito(event)">
             <textarea id="nuevo-escrito" rows="4" placeholder="Escribe algo nuevo..."></textarea>
             <button type="submit">Añadir</button>
@@ -100,7 +124,8 @@
     </div>
 
     <script>
-        const escritos = [];
+        const chapters = [];
+        let currentChapter = 0;
         let isAdmin = false;
 
         function login() {
@@ -112,7 +137,7 @@
                 document.getElementById('escritos-form').style.display = 'block'; // Mostrar formulario si es admin
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
-            } else if (username === 'usuario' && password === 'lectura') {
+            } else if (username === 'Foca' && password === 'lectura') {
                 isAdmin = false;
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('main-container').style.display = 'block';
@@ -127,20 +152,47 @@
 
             const nuevoEscrito = document.getElementById('nuevo-escrito').value;
             if (nuevoEscrito.trim() !== '') {
-                escritos.push(nuevoEscrito);
-                renderEscritos();
+                chapters.push(nuevoEscrito);
+                renderChapters();
                 document.getElementById('nuevo-escrito').value = '';
             }
         }
 
-        function renderEscritos() {
-            const escritosList = document.getElementById('escritos-list');
-            escritosList.innerHTML = '';
-            escritos.forEach((escrito, index) => {
-                const li = document.createElement('li');
-                li.textContent = escrito;
-                escritosList.appendChild(li);
+        function renderChapters() {
+            const chaptersContainer = document.getElementById('chapters-container');
+            chaptersContainer.innerHTML = '';
+            chapters.forEach((chapter, index) => {
+                const div = document.createElement('div');
+                div.className = 'chapter';
+                if (index === currentChapter) div.classList.add('active');
+                div.textContent = chapter;
+                chaptersContainer.appendChild(div);
             });
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const progress = document.getElementById('chapter-progress');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            progress.textContent = `Capítulo ${currentChapter + 1} de ${chapters.length}`;
+            prevBtn.disabled = currentChapter === 0;
+            nextBtn.disabled = currentChapter === chapters.length - 1;
+        }
+
+        function prevChapter() {
+            if (currentChapter > 0) {
+                currentChapter--;
+                renderChapters();
+            }
+        }
+
+        function nextChapter() {
+            if (currentChapter < chapters.length - 1) {
+                currentChapter++;
+                renderChapters();
+            }
         }
     </script>
 </body>
